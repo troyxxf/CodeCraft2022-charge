@@ -68,9 +68,10 @@ def readSite(dir):
 def readSolution(dir):
     with open(solutionFile,'r')as file_to_read:
         for day in range(Time_count):
+            is_Done = [0 for i in range(Client_Count)]
             for client in range(Client_Count):
-                lines=file_to_read.readline()
-                lines=lines[:len(lines)-1]
+                lines = file_to_read.readline()
+                lines = lines[:len(lines) - 1]
                 # lines[0]=lines.split(":<")
 
                 if not lines:
@@ -78,17 +79,33 @@ def readSolution(dir):
                     break
                     pass
                 given = 0
-                p_tmp=lines.split(">,<")
+                p_tmp = lines.split(">,<")
                 for i in range(len(p_tmp[0])):
                     if p_tmp[0][i] == ":":
                         name = p_tmp[0][:i]
-                        p_tmp[0]=p_tmp[0][i+2:]
+                        p_tmp[0] = p_tmp[0][i + 2:]
                         break
-                if name != Client[client].name:
-                    print(name,"名字不对,应该是",Client[client].name)
+                ##找client的名字
+                find_flag = 0
+                find_index=client
+                for find_index_tmp in range(Client_Count):
+                    if Client[find_index_tmp].name == name:
+                        find_flag = 1
+                        if is_Done[find_index_tmp] == 1:
+                            print(day, "时间点", name, "已经出现过了")
+                            exit()
+                        else:
+                            is_Done[find_index_tmp] = 1
+                        find_index=find_index_tmp
+                        break
+                if find_flag == 0:
+                    print(day, "时间点", name, "不在Client的名字中")
                     exit()
-                if(len(lines)==len(name)+1):
+
+                # A: 空的情况
+                if (len(lines) == len(name) + 1):
                     continue
+
                 #删除回车和<>等符号
                 lastone=p_tmp[len(p_tmp)-1]
                 if lastone[len(lastone)-2:]=="\n":
@@ -97,22 +114,17 @@ def readSolution(dir):
                     lastone=lastone[:len(lastone)-1]
                 p_tmp[len(p_tmp)-1]=lastone
 
-                print(Client[client].name,day)
                 for i in p_tmp:
                     one_tmp=i.split(",")
                     flag=0
                     for site_id in range(len(Site)):
                         if(Site[site_id].sitename==one_tmp[0]):#找节点的名字
                             flag=1
-                            if(Site[site_id].delayTime[client]>qos_constraint):
-                                print(Client[client].name,"的qos未被满足，它发给了",Site[site_id].sitename)
+                            if(Site[site_id].delayTime[find_index]>qos_constraint):
+                                print(Client[find_index].name,"的qos未被满足，它发给了",Site[site_id].sitename)
                                 exit()
                             Site[site_id].used[day]+=int(one_tmp[1])
-
-                            print(given)
                             given+=int(one_tmp[1])
-                            print(one_tmp[1])
-                            print(given)
                             if Site[site_id].used[day]>Site[site_id].bandwidth:
                                 print(Site[site_id].sitename,"的负载超过了带宽")
                                 print(Site[site_id].used)
@@ -121,10 +133,14 @@ def readSolution(dir):
                             break
                     if(flag==0):
                         print("在时刻",day,"没有这个节点",one_tmp[0])
-                if given!=Client[client].demand[day]:
-                    print(Client[client].name, "的第", day, "个记录点没有满足需求")
-                    print("分发了", given, "需求，需要", Client[client].demand[day])
+                if given!=Client[find_index].demand[day]:
+                    print(Client[find_index].name, "的第", day, "个记录点没有满足需求")
+                    print("分发了", given, "需求，需要", Client[find_index].demand[day])
                     exit()
+            for i in range(len(is_Done)):
+                if is_Done[i]==0:
+                    print(Client[i].name,"没有出现")
+
         lines = file_to_read.readline()
         if not lines:
             print("solution刚好读完")
@@ -145,7 +161,7 @@ if __name__ == '__main__':
     #读取输入文件
     demandFile = 'data/demand.csv'
     site_bandwidthFile = 'data/site_bandwidth.csv'
-    solutionFile = 'solution.txt'
+    solutionFile = 'output/solution.txt'
     qosFile='data/qos.csv'
 
     qos_constraint=400
@@ -156,6 +172,7 @@ if __name__ == '__main__':
     price=billing()
     # print(price)
     print(sum(price))
+
 
 
 
