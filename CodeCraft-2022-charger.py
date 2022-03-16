@@ -120,7 +120,7 @@ def readSolution(dir):
                     for site_id in range(len(Site)):
                         if(Site[site_id].sitename==one_tmp[0]):#找节点的名字
                             flag=1
-                            if(Site[site_id].delayTime[find_index]>qos_constraint):
+                            if(Site[site_id].delayTime[find_index]>=qos_constraint):
                                 print(Client[find_index].name,"的qos未被满足，它发给了",Site[site_id].sitename)
                                 exit()
                             Site[site_id].used[day]+=int(one_tmp[1])
@@ -152,7 +152,7 @@ def billing():
     sum=[]
     for i in range(len(Site)):
         charge_95=sorted(Site[i].used)
-        point=math.ceil(len(charge_95)*0.95)-2
+        point=math.ceil(len(charge_95)*0.95)-1
         sum.append(charge_95[point]*Site[i].price)
     return sum
 
