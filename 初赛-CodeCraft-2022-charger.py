@@ -1,5 +1,7 @@
 import math
-
+import matplotlib.pyplot as plt
+import shutil
+import os
 class site_info():
     def __init__(self,name,bandwidth):
         self.sitename=name
@@ -104,6 +106,8 @@ def readSolution(dir):
 
                 # A: 空的情况
                 if (len(lines) == len(name) + 1):
+                    if Client[find_index].demand!=0:
+                        print(Client[find_index].name,"在",day,"时刻没有分配需求，但是其需求是",Client[find_index].demand[day])
                     continue
 
                 #删除回车和<>等符号
@@ -122,7 +126,7 @@ def readSolution(dir):
                             flag=1
                             if(Site[site_id].delayTime[find_index]>=qos_constraint):
                                 print(Client[find_index].name,"的qos未被满足，它发给了",Site[site_id].sitename)
-                                exit()
+                                # exit()
                             Site[site_id].used[day]+=int(one_tmp[1])
                             given+=int(one_tmp[1])
                             if Site[site_id].used[day]>Site[site_id].bandwidth:
@@ -136,7 +140,7 @@ def readSolution(dir):
                 if given!=Client[find_index].demand[day]:
                     print(Client[find_index].name, "的第", day, "个记录点没有满足需求")
                     print("分发了", given, "需求，需要", Client[find_index].demand[day])
-                    exit()
+                    # exit()
             for i in range(len(is_Done)):
                 if is_Done[i]==0:
                     print(Client[i].name,"没有出现")
@@ -156,6 +160,101 @@ def billing():
         sum.append(charge_95[point]*Site[i].price)
     return sum
 
+def delete_picture(dir):
+    shutil.rmtree(dir)
+    os.mkdir(dir)
+
+def picture(site):
+    plt.cla()
+    x=range(len(site.used))
+    y=site.used
+    # plt.plot(y)
+    plt.bar(x,y)
+    charge_95 = sorted(site.used)
+    point = math.ceil(len(charge_95) * 0.95)-1
+    sense_use=0
+    for i in range(len(site.used)):
+        if site.used[i]<charge_95[point]:
+            sense_use+=site.used[i]
+        else:
+            sense_use+=charge_95[point]
+    if charge_95[point]==0:
+        plt.title(site.sitename+"  0 use")
+    else:
+        waste_rate=(charge_95[point]*len(site.used)-sense_use)/(charge_95[point]*len(site.used))
+        plt.title(site.sitename+"  waste_rate:"+str(waste_rate))
+    plt.axhline(y=charge_95[point], ls=":", c="red")  # 添加水平直线
+    # plt.axhline(y=site.bandwidth, ls=":", c="green")  # 添加水平直线
+    plt.savefig("./site_load_pic/"+site.sitename)
+
+
+def picture_according_load(site_waste_sort,Site):
+    print(site_waste_sort)
+    for i in range(len(site_waste_sort)):
+        if Site[site_waste_sort[i][0]].sitename=="Dn":
+            print("-------------------------------------------------")
+        print("picture ",site_waste_sort[i][0])
+        # print(Site[i].sitename,Site[i].used)
+        # plt.clf()
+        x=range(len(Site[site_waste_sort[i][0]].used))
+        y=Site[site_waste_sort[i][0]].used
+        # print(Site[i].sitename,"in 画图",y)
+        # plt.plot(y)
+        y.sort()
+        # print(Site[i].sitename, "in 画图", y)
+        # plt.text(20, 1000, str(y))
+        plt.plot(x,y)
+        # plt.bar(x,y)
+        link=0
+        for j in Site[site_waste_sort[i][0]].delayTime:
+            if j<qos_constraint:
+                link+=1
+        paixu=Site[site_waste_sort[i][0]].used
+        charge_95 = sorted(paixu)
+        point = math.ceil(len(charge_95) * 0.95)-1
+        sense_use=0
+        for j in range(len(paixu)):
+            if paixu[j]<charge_95[point]:
+                sense_use+=paixu[j]
+            else:
+                sense_use+=charge_95[point]
+        if charge_95[point]==0:
+            plt.title(Site[site_waste_sort[i][0]].sitename+"  0 use"+str(Site[i].used))
+        else:
+            waste_rate=(charge_95[point]*len(Site[site_waste_sort[i][0]].used)-sense_use)/(charge_95[point]*len(Site[site_waste_sort[i][0]].used))
+            plt.title(Site[site_waste_sort[i][0]].sitename+"  waste_rate:"+str(waste_rate)+"\n link_count:"+str(link)+"\nbandwidth:"+str(Site[i].bandwidth))
+
+        plt.axhline(y=charge_95[point], ls=":", c="red")  # 添加水平直线
+        # plt.axhline(y=site.bandwidth, ls=":", c="green")  # 添加水平直线
+        plt.savefig("./site_load_pic/"+Site[site_waste_sort[i][0]].sitename)
+
+        plt.close()
+
+
+def sort_waste_rate(Site):
+    site_waste_sort = []
+    for i in range(len(Site)):
+        tmp = []
+        tmp.append(i)
+        charge_95 = sorted(Site[i].used)
+        point = math.ceil(len(charge_95) * 0.95) - 1
+        sense_use = 0
+        for j in range(len(Site[i].used)):
+            if Site[i].used[j] < charge_95[point]:
+                sense_use += Site[i].used[j]
+            else:
+                sense_use += charge_95[point]
+        if charge_95[point] == 0:
+            waste_rate = 0
+        else:
+            waste_rate = (charge_95[point] * len(Site[i].used) - sense_use) / (charge_95[point] * len(Site[i].used))
+        tmp.append(waste_rate)
+        # print(tmp)
+        site_waste_sort.append(tmp)
+    # print(site_waste_sort)
+    site_waste_sort.sort(key=lambda x: x[1], reverse=1)
+    return site_waste_sort
+
 
 if __name__ == '__main__':
     #读取输入文件
@@ -170,8 +269,20 @@ if __name__ == '__main__':
     readQos(qosFile)
     readSolution(solutionFile)
     price=billing()
-    # print(price)
+    print(price)
     print(sum(price))
+
+    delete_picture("site_load_pic")
+
+
+    # picture(Site[0])
+    site_waste_sort=sort_waste_rate(Site)
+    # print(site_waste_sort)
+    picture_according_load(site_waste_sort,Site)
+
+        # print("picture ",site_waste_sort[i][0])
+
+
 
 
 
