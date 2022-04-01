@@ -29,9 +29,9 @@ class client_info():
 
 def readQos(dir):
     with open(dir, 'r') as file_to_read:
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         for i in range(len(Site)):
-            lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+            lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
             if not lines:
                 break
             lines=lines[:len(lines)-1]
@@ -41,10 +41,10 @@ def readQos(dir):
 
 def readConfig(dir):
     with open(dir, 'r') as file_to_read:
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         if lines=="[config]":
-            print("¶ÁÈ¡ÅäÖÃÎÄ¼ş")
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+            print("è¯»å–é…ç½®æ–‡ä»¶")
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         for i in range(len(lines)):
             if lines[i]=="=":
                 right=lines[i+1:len(lines)]
@@ -53,7 +53,7 @@ def readConfig(dir):
             if(right[i]=="\n"):
                 qos=int(right[:i])
                 break
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         for i in range(len(lines)):
             if lines[i]=="=":
                 base_count=int(lines[i+1:len(lines)])
@@ -61,7 +61,7 @@ def readConfig(dir):
 
 def readDemand(dir):
     with open(dir, 'r') as file_to_read:
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         for i in range(len(lines)):
             if lines[i] == "\n":
                 lines = lines[:i]
@@ -75,7 +75,7 @@ def readDemand(dir):
         Time=[]
 
         while True:
-            lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+            lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
             if not lines:
                 break
                 pass
@@ -93,7 +93,7 @@ def readDemand(dir):
             # print(stream_tmp)
             # for i in range(2,len(p_tmp)):
             #     Client[i-2].demand.append(int(p_tmp[i]))
-            flag=0#ÕÒÕâ¸öÊ±¼äÊÇ·ñÍ³¼Æ¹ı
+            flag=0#æ‰¾è¿™ä¸ªæ—¶é—´æ˜¯å¦ç»Ÿè®¡è¿‡
             for tt in Time:
                 if tt.name==t_name:
                     flag=1
@@ -108,12 +108,12 @@ def readDemand(dir):
 
 def readSite(dir):
     with open(dir, 'r') as file_to_read:
-        lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+        lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
         lines = lines[:len(lines) - 1]
         p_tmp = lines.split(",")
         Site=[]
         while True:
-            lines = file_to_read.readline()  # ÕûĞĞ¶ÁÈ¡Êı¾İ
+            lines = file_to_read.readline()  # æ•´è¡Œè¯»å–æ•°æ®
             if not lines:
                 break
             lines=lines[:len(lines)-1]
@@ -146,7 +146,7 @@ def readSolution(dir):
                 # lines[0]=lines.split(":<")
 
                 if not lines:
-                    print("solution²îÊı¾İ")
+                    print("solutionå·®æ•°æ®")
                     break
                     pass
                 given = 0
@@ -156,30 +156,30 @@ def readSolution(dir):
                         name = p_tmp[0][:i]
                         p_tmp[0] = p_tmp[0][i + 2:]
                         break
-                ##ÕÒclientµÄÃû×Ö
+                ##æ‰¾clientçš„åå­—
                 find_flag = 0
                 find_index=client
                 for find_index_tmp in range(len(Client)):
                     if Client[find_index_tmp].name == name:
                         find_flag = 1
                         if is_Done[find_index_tmp] == 1:
-                            print(day, "Ê±¼äµã", name, "ÒÑ¾­³öÏÖ¹ıÁË")
+                            print(day, "æ—¶é—´ç‚¹", name, "å·²ç»å‡ºç°è¿‡äº†")
                             exit()
                         else:
                             is_Done[find_index_tmp] = 1
                         find_index=find_index_tmp
                         break
                 if find_flag == 0:
-                    print(day, "Ê±¼äµã", name, "²»ÔÚClientµÄÃû×ÖÖĞ")
+                    print(day, "æ—¶é—´ç‚¹", name, "ä¸åœ¨Clientçš„åå­—ä¸­")
                     exit()
 
-                # A: ¿ÕµÄÇé¿ö
+                # A: ç©ºçš„æƒ…å†µ
                 if (len(lines) == len(name) + 1):
                     if Client[find_index].demand!=0:
-                        print(Client[find_index].name,"ÔÚ",day,"Ê±¿ÌÃ»ÓĞ·ÖÅäĞèÇó£¬µ«ÊÇÆäĞèÇóÊÇ",sum(Client[find_index].demand[day]))
+                        print(Client[find_index].name,"åœ¨",day,"æ—¶åˆ»æ²¡æœ‰åˆ†é…éœ€æ±‚ï¼Œä½†æ˜¯å…¶éœ€æ±‚æ˜¯",sum(Client[find_index].demand[day]))
                     continue
 
-                #É¾³ı»Ø³µºÍ<>µÈ·ûºÅ
+                #åˆ é™¤å›è½¦å’Œ<>ç­‰ç¬¦å·
                 lastone=p_tmp[len(p_tmp)-1]
                 if lastone[len(lastone)-2:]=="\n":
                     lastone=lastone[:len(lastone)-2]
@@ -191,10 +191,10 @@ def readSolution(dir):
                     one_tmp=i.split(",")
                     flag=0
                     for site_id in range(len(Site)):
-                        if(Site[site_id].sitename==one_tmp[0]):#ÕÒ½ÚµãµÄÃû×Ö
+                        if(Site[site_id].sitename==one_tmp[0]):#æ‰¾èŠ‚ç‚¹çš„åå­—
                             flag=1
-                            if(Site[site_id].delayTime[find_index]>=qos_constraint):#find_indexÊÇ½ÚµãµÄid
-                                print(Client[find_index].name,"µÄqosÎ´±»Âú×ã£¬Ëü·¢¸øÁË",Site[site_id].sitename)
+                            if(Site[site_id].delayTime[find_index]>=qos_constraint):#find_indexæ˜¯èŠ‚ç‚¹çš„id
+                                print(Client[find_index].name,"çš„qosæœªè¢«æ»¡è¶³ï¼Œå®ƒå‘ç»™äº†",Site[site_id].sitename)
                                 # exit()
                             for use_id in range(1,len(one_tmp)):
                                 stream_flag=0
@@ -204,30 +204,30 @@ def readSolution(dir):
                                         tmp_used=stream.lst[find_index]
                                         break
                                 if stream_flag==0:
-                                    print("Ê±¿Ì",day,"ÖĞ",Client[find_index].name,"Ã»ÓĞ",one_tmp[use_id],"Õâ¸öÁ÷")
+                                    print("æ—¶åˆ»",day,"ä¸­",Client[find_index].name,"æ²¡æœ‰",one_tmp[use_id],"è¿™ä¸ªæµ")
                                 Site[site_id].used[day]+=tmp_used
                                 given+=tmp_used
                             if Site[site_id].used[day]>Site[site_id].bandwidth:
-                                print(Site[site_id].sitename,"µÄ¸ºÔØ³¬¹ıÁË´ø¿í")
+                                print(Site[site_id].sitename,"çš„è´Ÿè½½è¶…è¿‡äº†å¸¦å®½")
                                 print(Site[site_id].used)
                                 print(Site[site_id].bandwidth)
                                 exit()
                             break
                     if(flag==0):
-                        print("ÔÚÊ±¿Ì",day,"Ã»ÓĞÕâ¸ö½Úµã",one_tmp[0])
+                        print("åœ¨æ—¶åˆ»",day,"æ²¡æœ‰è¿™ä¸ªèŠ‚ç‚¹",one_tmp[0])
                 if given!=sum(Client[find_index].demand[day]):
-                    print(Client[find_index].name, "µÄµÚ", day, "¸ö¼ÇÂ¼µãÃ»ÓĞÂú×ãĞèÇó")
-                    print("·Ö·¢ÁË", given, "ĞèÇó£¬ĞèÒª", sum(Client[find_index].demand[day]))
+                    print(Client[find_index].name, "çš„ç¬¬", day, "ä¸ªè®°å½•ç‚¹æ²¡æœ‰æ»¡è¶³éœ€æ±‚")
+                    print("åˆ†å‘äº†", given, "éœ€æ±‚ï¼Œéœ€è¦", sum(Client[find_index].demand[day]))
                     # exit()
             for i in range(len(is_Done)):
                 if is_Done[i]==0:
-                    print(Client[i].name,"Ã»ÓĞ³öÏÖ")
+                    print(Client[i].name,"æ²¡æœ‰å‡ºç°")
 
         lines = file_to_read.readline()
         if not lines:
-            print("solution¸ÕºÃ¶ÁÍê")
+            print("solutionåˆšå¥½è¯»å®Œ")
         else:
-            print("ÔõÃ´¶Á³ö¶àÒ»ĞĞÁË")
+            print("æ€ä¹ˆè¯»å‡ºå¤šä¸€è¡Œäº†")
             print(lines)
 
 def billing():
@@ -273,8 +273,8 @@ def picture(site):
     else:
         waste_rate=(charge_95[point]*len(site.used)-sense_use)/(charge_95[point]*len(site.used))
         plt.title(site.sitename+"  waste_rate:"+str(waste_rate))
-    plt.axhline(y=charge_95[point], ls=":", c="red")  # Ìí¼ÓË®Æ½Ö±Ïß
-    # plt.axhline(y=site.bandwidth, ls=":", c="green")  # Ìí¼ÓË®Æ½Ö±Ïß
+    plt.axhline(y=charge_95[point], ls=":", c="red")  # æ·»åŠ æ°´å¹³ç›´çº¿
+    # plt.axhline(y=site.bandwidth, ls=":", c="green")  # æ·»åŠ æ°´å¹³ç›´çº¿
     plt.savefig("./site_load_pic/"+site.sitename)
 
 def picture_according_load(site_waste_sort,Site):
@@ -287,10 +287,10 @@ def picture_according_load(site_waste_sort,Site):
         # plt.clf()
         x=range(len(Site[site_waste_sort[i][0]].used))
         y=Site[site_waste_sort[i][0]].used
-        # print(Site[i].sitename,"in »­Í¼",y)
+        # print(Site[i].sitename,"in ç”»å›¾",y)
         # plt.plot(y)
         y.sort()
-        # print(Site[i].sitename, "in »­Í¼", y)
+        # print(Site[i].sitename, "in ç”»å›¾", y)
         # plt.text(20, 1000, str(y))
         plt.plot(x,y)
         # plt.bar(x,y)
@@ -313,8 +313,8 @@ def picture_according_load(site_waste_sort,Site):
             waste_rate=(charge_95[point]*len(Site[site_waste_sort[i][0]].used)-sense_use)/(charge_95[point]*len(Site[site_waste_sort[i][0]].used))
             plt.title(Site[site_waste_sort[i][0]].sitename+"  waste_rate:"+str(waste_rate)+"\n link_count:"+str(link)+"\nbandwidth:"+str(Site[i].bandwidth))
 
-        plt.axhline(y=charge_95[point], ls=":", c="red")  # Ìí¼ÓË®Æ½Ö±Ïß
-        # plt.axhline(y=site.bandwidth, ls=":", c="green")  # Ìí¼ÓË®Æ½Ö±Ïß
+        plt.axhline(y=charge_95[point], ls=":", c="red")  # æ·»åŠ æ°´å¹³ç›´çº¿
+        # plt.axhline(y=site.bandwidth, ls=":", c="green")  # æ·»åŠ æ°´å¹³ç›´çº¿
         plt.savefig("./site_load_pic/"+Site[site_waste_sort[i][0]].sitename)
 
         plt.close()
@@ -345,7 +345,7 @@ def sort_waste_rate(Site):
 
 
 if __name__ == '__main__':
-    #¶ÁÈ¡ÊäÈëÎÄ¼ş
+    #è¯»å–è¾“å…¥æ–‡ä»¶
     configFile='data/config.ini'
     demandFile = 'data/demand.csv'
     site_bandwidthFile = 'data/site_bandwidth.csv'
