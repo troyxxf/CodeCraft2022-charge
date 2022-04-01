@@ -1,8 +1,5 @@
 #coding=gbk
 import math
-import os
-import shutil
-import matplotlib.pyplot as plt
 
 class stream_info():
     def __init__(self,name,lst):
@@ -205,6 +202,7 @@ def readSolution(dir):
                                         break
                                 if stream_flag==0:
                                     print("时刻",day,"中",Client[find_index].name,"没有",one_tmp[use_id],"这个流")
+                                    exit()
                                 Site[site_id].used[day]+=tmp_used
                                 given+=tmp_used
                             if Site[site_id].used[day]>Site[site_id].bandwidth:
@@ -243,12 +241,10 @@ def billing():
                 sum_real=base_count
             else:
                 sum_real=(charge_95[point]*Site[i].price-base_count)*(charge_95[point]*Site[i].price-base_count)/Site[i].bandwidth+charge_95[point]*Site[i].price
-                if sum_real>=(sum_real//1+0.5):
-                    sum_real=math.ceil(sum_real)
-                else:
-                    sum_real=math.floor(sum_real)
         result.append(sum_real)
     return result
+
+
 
 
 if __name__ == '__main__':
@@ -270,8 +266,11 @@ if __name__ == '__main__':
 
     price=billing()
     print(price)
-    print(sum(price))
-
-
+    ans=sum(price)
+    if ans >= (ans // 1 + 0.5):
+        ans = math.ceil(ans)
+    else:
+        ans = math.floor(ans)
+    print(ans)
 
 
